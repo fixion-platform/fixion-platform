@@ -1,0 +1,2 @@
+# fixion-platform
+TEAM-05 ALTHUB CAPSTONE PROJECT (MVP) from TEAM ALTITUDE
