@@ -1,11 +1,8 @@
-
 # database.py
-
 from typing import Optional
 from utils import get_password_hash
 
-# In-memory "database"
-# A simple dictionary to store user data.
+# --- In-memory "database" ---
 fake_users_db = {
     "admin@fixion.com": {
         "id": 1,
@@ -14,17 +11,26 @@ fake_users_db = {
         "phone_number": "08000000000",
         "hashed_password": get_password_hash("adminpass"),
         "role": "admin",
-        "nin": "00000000000"
+        "nin": "00000000000",
+        "email_verified": True,
+        "verified": True,
     }
 }
-user_id_counter = 2
+
+# Counter for assigning new IDs
+user_id_counter = 4
+
+
+# --- Utility Functions ---
 
 def get_user(email: str) -> Optional[dict]:
-    """Finds a user by email in the fake database."""
+    """Find a user by email in the fake database."""
     return fake_users_db.get(email)
 
-# For old users that don't have 'email_verified' key
-for user in fake_users_db.values():
-    if "email_verified" not in user:
-        user["email_verified"] = False
 
+def delete_user_by_email(email: str) -> bool:
+    """Deletes a user by email."""
+    if email in fake_users_db:
+        del fake_users_db[email]
+        return True
+    return False
