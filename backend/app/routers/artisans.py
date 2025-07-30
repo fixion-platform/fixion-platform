@@ -1,3 +1,4 @@
+# routers/artisans.py
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi import File, UploadFile, Form
 from schemas.artisan_schemas import ArtisanSignup

@@ -1,4 +1,4 @@
-# schemas.py
+# schemas/user_schemas.py
 
 from pydantic import BaseModel, EmailStr, Field, validator
 from typing import List, Optional

@@ -1,3 +1,4 @@
+# schemas/artisan_schemas.py
 from pydantic import BaseModel, EmailStr, Field
 from typing import Literal, Optional
 

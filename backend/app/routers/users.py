@@ -1,9 +1,12 @@
+# routers/users.py
 from fastapi import APIRouter, HTTPException, Depends, status, Query
 from typing import List
 
 from auth_utils import ensure_admin, get_current_active_user, get_password_hash
 from schemas.user_schemas import UserResponse, UserCreate, CustomerPreferences
 from database import fake_users_db, user_id_counter, get_user
+from database import delete_user_by_email
+import logging
 
 router = APIRouter(
     prefix="/users"
@@ -75,22 +78,18 @@ async def verify_email(
     user = fake_users_db.get(email)
 
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-    
-     #  Block artisans from self-verifying
+        logging.warning(f"EMAIL VERIFY FAILED - USER NOT FOUND: {email}")
+        raise HTTPException(status_code=404, detail="User not found")
+
     if user["role"] == "artisan":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Artisan email verification is handled by admin."
-        )
-    
+        logging.warning(f"EMAIL VERIFY BLOCKED - ARTISAN ATTEMPT: {email}")
+        raise HTTPException(status_code=403, detail="Artisan email verification is handled by admin.")
+
     if user.get("email_verified"):
         return {"message": "Email already verified."}
 
     user["email_verified"] = True
+    logging.info(f"EMAIL VERIFIED: {email}")
     return {"message": "Email successfully verified."}
 
 # CURRENT USER PROFILE
@@ -145,3 +144,25 @@ async def get_all_users(current_user: UserResponse = Depends(ensure_admin)):
     #  Return only non-admin users
     users = [user for user in fake_users_db.values() if user["role"] != "admin"]
     return users
+
+@router.delete("/me", status_code=204)
+async def delete_my_account(current_user: UserResponse = Depends(get_current_active_user)):
+    """
+    Permanently delete the current user's account.
+    """
+    success = delete_user_by_email(current_user.email)
+    if not success:
+        raise HTTPException(
+            status_code=500,
+            detail="Something went wrong while deleting your account."
+        ) 
+    logging.info(f"ACCOUNT DELETED: {current_user.email}")
+    return
+
+@router.get("/me/export", response_model=UserResponse)
+async def export_my_data(current_user: UserResponse = Depends(get_current_active_user)):
+    logging.info(f"USER DATA EXPORT: {current_user.email}")
+    """
+    Export the current user's data.
+    """
+    return current_user
