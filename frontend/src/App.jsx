@@ -1,7 +1,13 @@
-import Signup from "./pages/signup";
-import VerifyEmail from "./pages/verify";
-import Artisansignup from "./pages/artisansignup";
-import UploadIdentity from "./pages/upload";
+// import Signup from "./pages/signup";
+// // import VerifyEmail from "./pages/verify";
+// // import Artisansignup from "./pages/artisansignup";
+// // import UploadIdentity from "./pages/upload";
+
+// function App(){
+//   return <Signup />
+// }
+
+// export default App;
 import LoginPage from '../src/pages/LoginPage'
 import LoginPageII from '../src/pages/LoginPageII'
 import Dashboard from "./pages/dashboard/index";
@@ -12,9 +18,23 @@ import ErrorPageVI from '../src/pages/ErrorPageVI'
 import ErrorPageVII from '../src/pages/ErrorPageVII'
 import ErrorPageVIII from '../src/pages/ErrorPageVIII'
 
-function App(){
-  return <Signup />
+function App() {
+  return (
+    <div>
+      <ErrorPageVIII/>
+    </div>
+  )
 }
 
-export default App;
+export default App
+
+  // return (
+  //   <>
+  //     <Layout>
+  //       <Profile />
+  //       { <Dashboard /> }
+  //     </Layout>
+  //   </>
+  // );
+
 
