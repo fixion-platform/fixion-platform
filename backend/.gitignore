@@ -1,0 +1,21 @@
+# Virtual environment
+env/
+
+# Byte-compiled / cache
+pycache/
+*.py[cod]
+*.pyo
+
+# Uploads or temp media
+uploads/
+
+# Env secrets
+.env
+
+# VSCode project settings
+.vscode/
+
+# Test or log artifacts
+*.log
+*.db
+*.sqlite3
