@@ -1,6 +1,5 @@
 import Artisans from "../assets/artisans.png";
 import Logo from "../assets/fixionlogo.png";
-import "./artisansignup.css";
 
 // Social button SVGs
 const GoogleSVG = (

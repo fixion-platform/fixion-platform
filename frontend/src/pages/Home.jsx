@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
+import Landingnav from '../components/Landingnav';
 import Hero from '../components/Hero';
 import Features from '../components/Features';
 import HowItWorks from '../components/How';
@@ -9,7 +9,7 @@ import Footer from '../components/Footer';
 const Home = () => {
   return (
     <div>
-      <Navbar />
+      <Landingnav />
       <Hero />
       <Features />
       <HowItWorks />
