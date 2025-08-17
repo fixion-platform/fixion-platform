@@ -11,20 +11,20 @@ import ErrorPageVIII from '../src/pages/ErrorPageVIII'
 function App() {
   return (
     <div>
-      <ErrorPageV/>
+      <Dashboard/>
     </div>
   )
 }
 
 export default App
 
-  return (
+  /*return (
     <>
       <Layout>
         <Profile />
-        {/* <Dashboard /> */}
+        { <Dashboard /> }
       </Layout>
     </>
-  );
+  );*/
 
 
