@@ -1,14 +1,30 @@
+import LoginPage from '../src/pages/LoginPage'
+import LoginPageII from '../src/pages/LoginPageII'
 import Dashboard from "./pages/dashboard/index";
 import Layout from "./components/Layout";
 import Profile from "./pages/profile";
+import ErrorPageV from '../src/pages/ErrorPageV'
+import ErrorPageVI from '../src/pages/ErrorPageVI'
+import ErrorPageVII from '../src/pages/ErrorPageVII'
+import ErrorPageVIII from '../src/pages/ErrorPageVIII'
 
-export default function App() {
+function App() {
+  return (
+    <div>
+      <ErrorPageVIII/>
+    </div>
+  )
+}
+
+export default App
+
   return (
     <>
       <Layout>
         <Profile />
-        {/* <Dashboard /> */}
+        { <Dashboard /> }
       </Layout>
     </>
   );
-}
+
+
