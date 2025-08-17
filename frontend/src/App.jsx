@@ -1,17 +1,5 @@
-<<<<<<< HEAD
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from './pages/Home';
-import './App.css'
-
-function App() {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </Router>
-  )
-=======
 import Signup from "./pages/signup";
 import VerifyEmail from "./pages/verify";
 import Artisansignup from "./pages/artisansignup";
@@ -25,11 +13,17 @@ import ErrorPageV from '../src/pages/ErrorPageV'
 import ErrorPageVI from '../src/pages/ErrorPageVI'
 import ErrorPageVII from '../src/pages/ErrorPageVII'
 import ErrorPageVIII from '../src/pages/ErrorPageVIII'
+import './App.css'
 
-function App(){
-  return <Signup />
->>>>>>> main
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
+  )
+
+
 }
-
 export default App;
-
