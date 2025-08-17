@@ -1,0 +1,162 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+*{
+  font-family: Poppins, sans-serif;
+}
+
+.login-container {
+  height: 120vh;
+}
+
+/* Hero */
+.hero-section {
+  width: 37.6875rem; 
+  height: 58.4375rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-image {
+  height: 58.4375rem;
+  width: 37.6875rem;
+  object-fit: cover;
+}
+
+.hero-logo {
+  width: 9.746875rem; 
+  height: 3.9301875rem; 
+  aspect-ratio: 155.95 / 62.88;
+}
+
+.hero-heading {
+  height: 6.9333125rem; 
+  font-family: 'Poppins', sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 2.75rem; /* 44px */
+  text-align: center;
+  color: white;
+}
+
+/* Form area */
+.form-section {
+  height: 58.4375rem; /* 935px */
+  width: 100%;
+  background-color: #F9FAFB; /* tailwind gray-50 */
+}
+
+/* Form title */
+.form-title {
+  color: #1A1A1A;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+  font-size: 2.5rem; /* 40px */
+  font-style: normal;
+  font-weight: 600;
+  line-height: 3.25rem; /* 52px */
+  position: relative;
+}
+
+/* Social button (was @apply ...) */
+.social-btn {
+  display: flex;
+  flex: 1 1 0%;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;             /* gap-3 */
+  padding: 0.75rem 1rem;    /* py-3 px-4 */
+  border: 1px solid #D1D5DB;/* border-gray-300 */
+  border-radius: 0.5rem;    /* rounded-lg */
+  background: transparent;
+  transition: background-color .15s ease, color .15s ease;
+  cursor: pointer;
+}
+
+/* placeholder icon used in social buttons and inputs */
+.icon-placeholder {
+  width: 1.25rem; /* 20px */
+  height: 1.25rem; /* 20px */
+  background-color: #d1d5db; /* gray-300 */
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+/* Input styles (was @apply ...) */
+.input-field {
+  width: 100%;                 /* w-full */
+  padding: 0.75rem 1rem;       /* py-3 px-4 */
+  padding-right: 2.5rem;       /* pr-10 = 2.5rem */
+  border: 1px solid #D1D5DB;   /* border-gray-300 */
+  border-radius: 0.5rem;       /* rounded-lg */
+  outline: none;
+  box-sizing: border-box;
+  transition: box-shadow .15s ease, border-color .15s ease;
+  background: white;
+}
+
+/* Focus ring similar to focus:ring-2 focus:ring-indigo-500 */
+.input-field:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.18); /* subtle indigo ring */
+}
+
+/* Login button (was @apply ...) */
+.login-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #312E81; /* approximated indigo-900 */
+  color: #ffffff;
+  padding: 0.75rem 1rem;    /* py-3 px-4 */
+  border-radius: 0.5rem;    /* rounded-lg */
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: background-color .15s ease, box-shadow .15s ease;
+}
+
+.login-btn:hover {
+  background-color: #3730a3; /* approximated indigo-800 */
+}
+
+.login-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.18);
+}
+
+/* Small helper for icons inside absolute container (email/password icons) */
+.icon-placeholder.absolute {
+  position: absolute;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+  }
+
+  .hero-section {
+    width: 100%;
+    height: 250px; /* or adjust as needed */
+    order: -1; /* Move to top if needed */
+  }
+
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .form-section {
+    width: 100%;
+    height: auto;
+    padding: 2rem 1rem;
+  }
+}
+
