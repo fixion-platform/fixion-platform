@@ -10,28 +10,28 @@
 
 /* Hero */
 .hero-section {
-  width: 37.6875rem; /* 603px */
-  height: 58.4375rem; /* 935px */
+  width: 37.6875rem; 
+  height: 58.4375rem;
   position: relative;
   overflow: hidden;
 }
 
 .hero-image {
-  height: 58.4375rem; /* 935px */
-  width: 37.6875rem; /* 603px */
+  height: 58.4375rem;
+  width: 37.6875rem;
   object-fit: cover;
 }
 
 .hero-logo {
-  width: 9.746875rem; /* 155.95px */
-  height: 3.9301875rem; /* 62.883px */
+  width: 9.746875rem; 
+  height: 3.9301875rem; 
   aspect-ratio: 155.95 / 62.88;
 }
 
 .hero-heading {
-  height: 6.9333125rem; /* 110.933px */
+  height: 6.9333125rem; 
   font-family: 'Poppins', sans-serif;
-  font-size: 2rem; /* 32px */
+  font-size: 2rem;
   font-weight: 600;
   line-height: 2.75rem; /* 44px */
   text-align: center;
