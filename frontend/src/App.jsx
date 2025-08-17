@@ -1,3 +1,7 @@
+import Signup from "./pages/signup";
+import VerifyEmail from "./pages/verify";
+import Artisansignup from "./pages/artisansignup";
+import UploadIdentity from "./pages/upload";
 import LoginPage from '../src/pages/LoginPage'
 import LoginPageII from '../src/pages/LoginPageII'
 import Dashboard from "./pages/dashboard/index";
@@ -8,23 +12,9 @@ import ErrorPageVI from '../src/pages/ErrorPageVI'
 import ErrorPageVII from '../src/pages/ErrorPageVII'
 import ErrorPageVIII from '../src/pages/ErrorPageVIII'
 
-function App() {
-  return (
-    <div>
-      <ErrorPageVIII/>
-    </div>
-  )
+function App(){
+  return <Signup />
 }
 
-export default App
-
-  return (
-    <>
-      <Layout>
-        <Profile />
-        { <Dashboard /> }
-      </Layout>
-    </>
-  );
-
+export default App;
 
