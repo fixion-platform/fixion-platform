@@ -1,5 +1,6 @@
 import LoginPage from '../src/pages/LoginPage'
-import LoginPageII from '../src/pages/LoginPageII'import Dashboard from "./pages/dashboard/index";
+import LoginPageII from '../src/pages/LoginPageII'
+import Dashboard from "./pages/dashboard/index";
 import Layout from "./components/Layout";
 import Profile from "./pages/profile";
 import ErrorPageV from '../src/pages/ErrorPageV'
