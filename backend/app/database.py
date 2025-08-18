@@ -20,6 +20,8 @@ fake_users_db = {
 # Counter for assigning new IDs
 user_id_counter = 4
 
+artisan_db = {}
+
 
 # --- Utility Functions ---
 

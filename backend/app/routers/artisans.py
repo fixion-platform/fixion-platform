@@ -4,7 +4,7 @@ from fastapi import File, UploadFile, Form
 from schemas.artisan_schemas import ArtisanSignup
 from schemas.user_schemas import UserResponse
 from auth_utils import get_password_hash, get_current_active_user
-from database import fake_users_db
+from database import fake_users_db, artisan_db
 from typing import Optional
 import re
 import os
@@ -127,4 +127,41 @@ def get_uploaded_documents(email: str, current_user: UserResponse = Depends(get_
         "uploaded_files": documents
     }
 
+
+# CRUD OPERATions created by Kayoode Johnnson
+@router.get("/artisan")
+async def get_all_artisan():
+    return artisan_db
+
+# Create artisan
+@router.post("/artisan")
+def create_artisan(artisan: ArtisanSignup):
+    id = artisan.id = len(artisan_db) + 1
+    details = artisan.model_dump()
+    return {
+        'Message' : "Artisan Created Successfully",
+        "details" : details
+    }
+
+#Update artisan details
+@router.patch("/artisan/{id}")
+def update_artisan(id: uuid, artisan: artisan_signup):
+    id = artisan.id
+    if id not in artisan_db:
+        raise HTTPException(status_code=404, detail="Artisan not found")
+    details = artisan_db[id] = artisan.model_dump()
+    return {
+        'Message': "Artisan Updated Successfully",
+        "artisan": details
+    }
+
+# Delete artisan
+@router.delete("/artisan/{id}")
+async def delete_artisan(id: uuid):
+    if id not in artisan_db:
+        raise HTTPException(status_code=404, detail="Artisan not found")
+    del artisan_db[id]
+    return {
+        'Message': "Artisan Deleted Successfully"
+    }
 
