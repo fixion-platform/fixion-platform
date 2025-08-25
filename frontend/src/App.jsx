@@ -13,14 +13,14 @@ import Profile from "./pages/profile";
 import ErrorPageV from '../src/pages/ErrorPageV';
 import ErrorPageVI from '../src/pages/ErrorPageVI';
 import ErrorPageVII from '../src/pages/ErrorPageVII';
-import ErrorPageVIII from '../src/pages/ErrorPageVIII;'
+import ErrorPageVIII from '../src/pages/ErrorPageVIII';
 import './App.css'
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<ErrorPageVIII />} />
       </Routes>
     </Router>
   )
