@@ -1,10 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import "tailwindcss";
-<<<<<<< HEAD
-=======
-@import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
 
 :root {
   --radius: 0.625rem;
@@ -40,7 +36,7 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-<<<<<<< HEAD
+
   /* color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424; */
@@ -96,7 +92,7 @@ button:focus-visible {
   :root {
     color: #213547;
     background-color: #ffffff;
-=======
+
   --profile-foreground: oklch(27.791% 0.12199 277.384);
 }
 
@@ -182,4 +178,4 @@ button:focus-visible {
     @apply bg-background text-foreground;
   }
 } */
->>>>>>> main
+
