@@ -7,12 +7,12 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import JSONResponse
 
-from schemas.auth_schemas import Token
-import auth_utils
-from database import get_user
-from services.auth_service import get_password_hash
-from services.auth_service import ACCESS_TOKEN_EXPIRE_MINUTES
-from utils import validate_strong_password
+from app.schemas.auth_schemas import Token
+from app import auth_utils
+from app.database import get_user
+from app.services.auth_service import get_password_hash
+from app.services.auth_service import ACCESS_TOKEN_EXPIRE_MINUTES
+from app.utils import validate_strong_password
 
 # --- Configure Logging ---
 logging.basicConfig(

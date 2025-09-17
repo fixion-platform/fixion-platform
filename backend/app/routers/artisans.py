@@ -1,10 +1,10 @@
 # routers/artisans.py
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi import File, UploadFile, Form
-from schemas.artisan_schemas import ArtisanSignup
-from schemas.user_schemas import UserResponse
-from auth_utils import get_password_hash, get_current_active_user
-from database import fake_users_db
+from app.schemas.artisan_schemas import ArtisanSignup
+from app.schemas.user_schemas import UserResponse
+from app.auth_utils import get_password_hash, get_current_active_user
+from app.database import fake_users_db
 from typing import Optional
 import re
 import os
