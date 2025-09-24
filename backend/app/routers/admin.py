@@ -3,9 +3,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List
 
-from database import fake_users_db
-from schemas.user_schemas import UserResponse
-from auth_utils import ensure_admin
+from app.database import fake_users_db
+from app.schemas.user_schemas import UserResponse
+from app.auth_utils import ensure_admin
 
 router = APIRouter()
 

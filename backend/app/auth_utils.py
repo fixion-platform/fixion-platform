@@ -3,14 +3,14 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
-from schemas.user_schemas import UserResponse
-from services.auth_service import (
+from app.schemas.user_schemas import UserResponse
+from app.services.auth_service import (
     get_password_hash,
     verify_password,
     create_access_token,
     decode_access_token,
 )
-from database import get_user
+from app.database import get_user
 import os
 
 # OAuth2 setup - this tells FastAPI where to find the token login route

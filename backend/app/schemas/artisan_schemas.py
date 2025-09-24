@@ -4,17 +4,17 @@ from typing import Literal, Optional
 
 
 class ArtisanSignup(BaseModel):
-    full_name: str = Field(min_length=3, example="John Doe")
-    email: EmailStr = Field(example="artisan@fixion.com")
-    phone_number: str = Field(min_length=11, max_length=15, example="08012345678")
-    password: str = Field(min_length=8, example="StrongPass@123")
-    service_category: str = Field(example="Plumber")
-    service_description: Optional[str] = Field(default=None, example="Expert in home plumbing")
-    years_of_experience: int = Field(gt=0, example=5)  #  made this NOT optional
-    nin: str = Field(min_length=11, max_length=11, example="12345678901")
+    full_name: str = Field(..., min_length=3, example="John Doe")  # type: ignore
+    email: EmailStr = Field(..., example="artisan@fixion.com")  # type: ignore
+    phone_number: str = Field(..., min_length=11, max_length=15, example="08012345678")  # type: ignore
+    password: str = Field(..., min_length=8, example="StrongPass@123") # type: ignore
+    service_category: str = Field(..., example="Plumber")  # type: ignore
+    service_description: Optional[str] = Field(default=None, example="Expert in home plumbing")  # type: ignore
+    years_of_experience: int = Field(..., gt=0, example=5)  #  made this NOT optional  # type: ignore
+    nin: str = Field(..., min_length=11, max_length=11, example="12345678901")  # type: ignore
 
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "full_name": "John Artisan",
                 "email": "artisan@fixion.com",

@@ -2,7 +2,7 @@
 # main.py
 
 from fastapi import FastAPI
-from routers import authentication, users, artisans, admin
+from app.routers import authentication, users, artisans, admin
 
 app = FastAPI(
     title="Fixion API",

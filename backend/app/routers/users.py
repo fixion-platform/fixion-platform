@@ -2,10 +2,10 @@
 from fastapi import APIRouter, HTTPException, Depends, status, Query
 from typing import List
 
-from auth_utils import ensure_admin, get_current_active_user, get_password_hash
-from schemas.user_schemas import UserResponse, UserCreate, CustomerPreferences
-from database import fake_users_db, user_id_counter, get_user
-from database import delete_user_by_email
+from app.auth_utils import ensure_admin, get_current_active_user, get_password_hash
+from app.schemas.user_schemas import UserResponse, UserCreate, CustomerPreferences
+from app.database import fake_users_db, user_id_counter, get_user
+from app.database import delete_user_by_email
 import logging
 
 router = APIRouter(
