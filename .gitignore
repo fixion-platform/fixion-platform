@@ -1,0 +1,42 @@
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+
+# Environment / Secrets
+.env
+*.env
+.env.*.local
+!*.env.example
+
+
+# Uploads / Media
+uploads/
+media/
+uploaded_docs/
+tmp/
+*.log
+
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+
+# Testing / Coverage
+.coverage
+.pytest_cache/
+htmlcov/

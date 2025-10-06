@@ -1,0 +1,30 @@
+# Core framework
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+starlette==0.47.3
+
+# Database
+SQLAlchemy==2.0.43
+alembic==1.16.5
+psycopg2-binary==2.9.10   # Postgres driver
+
+# Security / Auth
+passlib[bcrypt]==1.7.4
+python-jose==3.5.0
+cryptography==45.0.7
+bcrypt==4.0.1
+
+# Validation / Settings
+pydantic==2.11.9
+pydantic-settings==2.5.2
+email_validator==2.2.0
+python-multipart==0.0.20   # file uploads
+python-dotenv==1.1.1       # load .env in dev
+
+# HTTP / External APIs
+httpx==0.28.1
+requests==2.32.5
+
+# Rate limiting
+slowapi==0.1.9
+limits==5.4.0
