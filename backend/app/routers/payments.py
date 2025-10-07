@@ -581,8 +581,7 @@ def handle_paystack_transfer_events(event: str, data: dict, db: Session):
     db.commit()
     return {"status": "ok"}
 
-
-# Paystack webhook
+# ---------- Paystack webhook (all events) ----------
 @router.post("/webhook")
 async def paystack_webhook(
     request: Request,
@@ -611,6 +610,7 @@ async def paystack_webhook(
     reference = data.get("reference")
     event_id = str(data.get("id") or reference or "")
 
+    # --- transfer events (bank payouts) first, unchanged
     if event.startswith("transfer."):
         try:
             return handle_paystack_transfer_events(event, data, db)
@@ -618,9 +618,48 @@ async def paystack_webhook(
             db.rollback()
             return {"status": "ok", "note": "transfer handler error"}
 
+   
+    # NEW: wallet top-ups via Paystack (these do NOT create a Payment row)
+    # We detect a top-up by metadata.wallet_topup == True
+    # If charge.success, we credit the user's wallet idempotently.
+   
+    meta = (data.get("metadata") or {}) if isinstance(data, dict) else {}
+    if meta.get("wallet_topup") and (event == "charge.success"):
+        try:
+            user_id = meta.get("user_id")
+            amount = Decimal(str(meta.get("amount") or "0"))
+            topup_ref = reference  # paystack reference
+            if user_id and amount > 0 and topup_ref:
+                already = (
+                    db.query(WalletLedger)
+                    .filter(
+                        WalletLedger.reference == topup_ref,
+                        WalletLedger.entry_type == LedgerEntryType.deposit,
+                    )
+                    .first()
+                )
+                if not already:
+                    db.add(
+                        WalletLedger(
+                            user_id=uuid.UUID(user_id),
+                            currency="NGN",
+                            entry_type=LedgerEntryType.deposit,
+                            amount=amount,
+                            reference=topup_ref,
+                            meta={"reason": "wallet_topup_paystack_webhook"},
+                        )
+                    )
+                    db.commit()
+            return {"status": "ok", "wallet_topup": True}
+        except Exception:
+            db.rollback()
+            return {"status": "ok", "wallet_topup": "error"}
+
+    # If there's no reference, we can't continue
     if not reference:
         return {"status": "ok", "note": "no reference"}
 
+    # From here on, it's a normal job payment flow (there IS a Payment row)
     pmt = (
         db.query(Payment)
         .filter(Payment.reference == reference)
@@ -631,7 +670,7 @@ async def paystack_webhook(
         request.state.log_extra = {"unknown_reference": reference}
         return {"status": "ok", "note": "unknown reference"}
 
-    # Idempotency on Paystack event id
+    # Idempotency on Paystack event id for payment events
     if event_id:
         seen = (
             db.query(IdempotencyKey)
