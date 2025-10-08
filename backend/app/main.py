@@ -80,7 +80,7 @@ app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
 # In prod, lock allowed hosts (add your Render service hostname later)
 if IS_PRODUCTION:
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=[
-        "*.onrender.com",
+        "https://fixion.up.railway.app",
         "localhost", "127.0.0.1"
     ])
 
