@@ -28,3 +28,5 @@ requests==2.32.5
 # Rate limiting
 slowapi==0.1.9
 limits==5.4.0
+
+bleach==6.1.0
