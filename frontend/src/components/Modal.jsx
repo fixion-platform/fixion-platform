@@ -1,13 +1,27 @@
-import React from 'react';
-import { useState } from 'react';
-import logo from '../assets/images/fixion-log.svg';
-import closeSquare from '../assets/icons/close-square.svg';
-import image from '../assets/images/c712ecef6662622c4f540ce7b8a4cdb9d2a508fc.png';
+import React from "react";
+import { useState } from "react";
+import logo from "../assets/images/fixion-log.svg";
+import closeSquare from "../assets/icons/close-square.svg";
+import image from "../assets/images/c712ecef6662622c4f540ce7b8a4cdb9d2a508fc.png";
+import { Link, useNavigate } from "react-router-dom";
 
 const Modal = ({ isOpen, onClose }) => {
-  const [selectedRole, setSelectedRole] = useState('artisan'); // default selection
+  const [selectedRole, setSelectedRole] = useState(null); // no default
+  const [showHighlight, setShowHighlight] = useState(false); // for delayed border highlight
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-    if (!isOpen) return null;
+  const handleRoleClick = (role) => {
+    setShowHighlight(false); // temporarily hide highlight
+    setSelectedRole(role); // store selected role
+    setLoading(true); // block further clicks if needed
+
+    setTimeout(() => {
+      setShowHighlight(true); // now show the highlight
+      setLoading(false); // allow button again
+    }, 300); // 2s delay before showing selection
+  };
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 bg-opacity-50 px-4">
@@ -29,22 +43,24 @@ const Modal = ({ isOpen, onClose }) => {
         <div className="flex justify-center gap-6 flex-wrap">
           {/* Client Card */}
           <div
-            onClick={() => setSelectedRole('client')}
+            onClick={() => handleRoleClick("client")}
             className={`w-[250px] p-5 rounded-xl border transition cursor-pointer ${
-              selectedRole === 'client' ? 'border-[#0A0159]' : 'border-gray-300'
+              showHighlight && selectedRole === "client"
+                ? "border-[#0A0159]"
+                : "border-gray-300"
             }`}
           >
             <div className="flex justify-between mb-4">
               <img src={image} alt="Client Preview" className="w-10 h-10" />
               <div
                 className={`w-5 h-5 rounded-full border ${
-                  selectedRole === 'client'
-                    ? 'border-[#0A0159] bg-[#0A0159]'
-                    : 'border-gray-400'
+                  showHighlight && selectedRole === "client"
+                    ? "border-[#0A0159] bg-[#0A0159]"
+                    : "border-gray-400"
                 }`}
               >
-                {selectedRole === 'client' && (
-                  <div className="w-2 h-2 bg-white rounded-full m-auto mt-[5px]"></div>
+                {showHighlight && selectedRole === "client" && (
+                  <div className="w-2 h-2 bg-white rounded-full m-auto mt-[5px]" />
                 )}
               </div>
             </div>
@@ -52,25 +68,26 @@ const Modal = ({ isOpen, onClose }) => {
               I’m a client, hiring <br /> for a service
             </p>
           </div>
-
           {/* Artisan Card */}
           <div
-            onClick={() => setSelectedRole('artisan')}
+            onClick={() => handleRoleClick("artisan")}
             className={`w-[250px] p-5 rounded-xl border transition cursor-pointer ${
-              selectedRole === 'artisan' ? 'border-[#0A0159]' : 'border-gray-300'
+              showHighlight && selectedRole === "artisan"
+                ? "border-[#0A0159]"
+                : "border-gray-300"
             }`}
           >
             <div className="flex justify-between mb-4">
               <img src={image} alt="Artisan Preview" className="w-10 h-10" />
               <div
                 className={`w-5 h-5 rounded-full border ${
-                  selectedRole === 'artisan'
-                    ? 'border-[#0A0159] bg-[#0A0159]'
-                    : 'border-gray-400'
+                  showHighlight && selectedRole === "artisan"
+                    ? "border-[#0A0159] bg-[#0A0159]"
+                    : "border-gray-400"
                 }`}
               >
-                {selectedRole === 'artisan' && (
-                  <div className="w-2 h-2 bg-white rounded-full m-auto mt-[5px]"></div>
+                {showHighlight && selectedRole === "artisan" && (
+                  <div className="w-2 h-2 bg-white rounded-full m-auto mt-[5px]" />
                 )}
               </div>
             </div>
@@ -81,8 +98,27 @@ const Modal = ({ isOpen, onClose }) => {
         </div>
 
         {/* CTA */}
+
         <div className="flex justify-center mt-10">
-          <button className="bg-[#0A0159] text-white px-10 py-3 rounded-2xl font-medium">
+          <button
+            disabled={loading}
+            className={`bg-[#0A0159] text-white px-10 py-3 rounded-2xl font-medium ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            // className="bg-[#0A0159] text-white px-10 py-3 rounded-2xl font-medium"
+            onClick={() => {
+              if (!selectedRole) {
+                alert("Please select a role before proceeding.");
+                return;
+              }
+
+              if (selectedRole === "client") {
+                navigate("/signup-customer");
+              } else if (selectedRole === "artisan") {
+                navigate("/signup-artisan");
+              }
+            }}
+          >
             Create Account
           </button>
         </div>
@@ -96,6 +132,4 @@ const Modal = ({ isOpen, onClose }) => {
   );
 };
 
-
-
-export default Modal
+export default Modal;
