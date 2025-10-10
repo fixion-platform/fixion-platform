@@ -1,6 +1,7 @@
 import React from "react";
 import artisanImg from "../assets/images/hero-artisan-img.png";
 import bgImg from "../assets/images/hero-bg-img.png";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
@@ -30,9 +31,14 @@ const Hero = () => {
             <button className="bg-indigo-950 text-white px-6 py-3 rounded-[16px] text-[15px] font-semibold w-full sm:w-[180px]">
               Browse Artisans
             </button>
-            <button className="border border-indigo-950 text-indigo-950 px-6 py-3 rounded-[16px] text-[15px] font-semibold w-full sm:w-[180px]">
+            {/* <button className="border border-indigo-950 text-indigo-950 px-6 py-3 rounded-[16px] text-[15px] font-semibold w-full sm:w-[180px]">
               Join as Artisan
-            </button>
+            </button> */}
+            <Link to="/signup-artisan">
+              <button className="border border-indigo-950 text-indigo-950 px-6 py-3 rounded-[16px] text-[15px] font-semibold w-full sm:w-[180px]">
+                Join as Artisan
+              </button>
+            </Link>
           </div>
         </div>
         <div className="relative flex justify-center items-center w-full">

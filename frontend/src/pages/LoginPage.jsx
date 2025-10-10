@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import img1 from '../assets/artisan00.png';
+import img1 from '../assets/images/758a999c511ebe7be801513d5856261262c7c097.jpg';
 import img2 from '../assets/fixion_logo.svg';
 import img3 from '../assets/gg_google.svg';
 import img4 from '../assets/mingcute_apple-fill.svg';
@@ -20,7 +20,7 @@ export default function FixionLogin() {
       <img
         src={img1}
         alt="Artisan giving thumbs up"
-        className="hero-image absolute inset-0 w-full h-full object-cover z-10"
+        className="hero-image absolute inset-0 w-full h-full object-fill z-10"
       />
 
       {/* Gradient overlay */}
