@@ -1,168 +1,130 @@
-# routers/users.py
-from fastapi import APIRouter, HTTPException, Depends, status, Query
-from typing import List
+from __future__ import annotations
 
-from auth_utils import ensure_admin, get_current_active_user, get_password_hash
-from schemas.user_schemas import UserResponse, UserCreate, CustomerPreferences
-from database import fake_users_db, user_id_counter, get_user
-from database import delete_user_by_email
-import logging
+from app.config import IS_PRODUCTION
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
 
-router = APIRouter(
-    prefix="/users"
-)
-# USER SIGNUP (CUSTOMERS ONLY)
-@router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED, tags=["Users"])
-async def create_user(user: UserCreate):
-    """
-    Handles user registration for both Customers and Artisans.
-    """
-    global user_id_counter  # Use the global counter from database.py 
+from app.db.database import get_db
+from app.auth_utils import get_current_user
+from app.utils import encrypt_str, decrypt_str
+from app.models import User
+from app.schemas.user_schemas import UserOut, UpdateProfileIn, PreferencesIn
+from app.schemas.auth_schemas import VerifyEmailOut, VerifyEmailConfirmIn
+from app.services.verification_service import issue_email_verification, confirm_email_verification
 
-    #  Prevent users from registering as admin
-    if user.role == "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="You cannot register directly as an admin.",
-        )
+# sanitizers
+from app.security.sanitize import clean_name, clean_phone, clean_free_text
 
-    #  Check if user already exists
-    if get_user(user.email):
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered",
-        )
+router = APIRouter(prefix="/users", tags=["Users"])
 
-    #  Check for duplicate NIN
-    for existing_user in fake_users_db.values():
-        if existing_user.get("nin") == user.nin:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="NIN already registered",
-            )
-
-    #  Hash the password
-    hashed_password = get_password_hash(user.password)
-
-    #  Prepare new user data
-    new_user_data = user.model_dump()
-    new_user_data.pop("password")
-    new_user_data["hashed_password"] = hashed_password
-    new_user_data["id"] = user_id_counter 
-    new_user_data["email_verified"] = False 
-    new_user_data["location"] = ""
-    new_user_data["service_preferences"] = []
-
-    #  Save to fake DB using email as key
-    fake_users_db[user.email] = new_user_data
-    user_id_counter += 1 
-
-    return UserResponse(
-        id=new_user_data["id"],
-        email=new_user_data["email"],
-        full_name=new_user_data["full_name"],
-        phone_number=new_user_data["phone_number"],
-        nin=new_user_data["nin"],
-        role=new_user_data["role"],
-        email_verified=new_user_data["email_verified"] 
-    ) 
-
-#  EMAIL VERIFICATION ROUTE (FOR CUSTOMERS ONLY)
-@router.post("/verify-email", tags=["Users"])
-async def verify_email(
-    email: str = Query(..., description="Email to verify"),
-):
-    """
-    Simulates customer email verification. Artisans are verified by Admin only.
-    """
-    user = fake_users_db.get(email)
-
-    if not user:
-        logging.warning(f"EMAIL VERIFY FAILED - USER NOT FOUND: {email}")
-        raise HTTPException(status_code=404, detail="User not found")
-
-    if user["role"] == "artisan":
-        logging.warning(f"EMAIL VERIFY BLOCKED - ARTISAN ATTEMPT: {email}")
-        raise HTTPException(status_code=403, detail="Artisan email verification is handled by admin.")
-
-    if user.get("email_verified"):
-        return {"message": "Email already verified."}
-
-    user["email_verified"] = True
-    logging.info(f"EMAIL VERIFIED: {email}")
-    return {"message": "Email successfully verified."}
-
-# CURRENT USER PROFILE
-@router.get("/me", response_model=UserResponse, tags=["Users"])
-async def read_users_me(current_user: UserResponse = Depends(get_current_active_user)):
-    """
-    Fetches the details of the currently authenticated user.
-    """
-    return current_user
-
-# UPDATE CUSTOMER PREFERENCES
-@router.put("/preferences", tags=["Users"])
-async def update_preferences(
-    preferences: CustomerPreferences,
-    current_user: UserResponse = Depends(get_current_active_user)
-):
-    
-    """
-    Allows customers to update their location and service preferences.
-    """
-    if current_user.role != "customer":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only customers can update preferences."
-        )
-
-    user = fake_users_db.get(current_user.email)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
-    user["location"] = preferences.location
-    user["service_preferences"] = preferences.service_preferences
-
+@router.get("/me", response_model=UserOut)
+def get_me(current: User = Depends(get_current_user)):
+    u = current
     return {
-        "message": "Preferences updated successfully",
-        "location": preferences.location,
-        "service_preferences": preferences.service_preferences
+        "id": str(u.id),
+        "full_name": u.full_name,
+        "email": u.email,
+        "phone_number": decrypt_str(u.phone_number),
+        "role": str(u.role),
+        "location": u.location,
+        "service_preferences": u.service_preferences or {},
+        "email_verified": u.email_verified,
+        "phone_verified": u.phone_verified,
+        "is_active": u.is_active,
+        "is_blocked": u.is_blocked,
     }
 
-# ADMIN VIEW ALL NON-ADMIN USERS
-@router.get("/", response_model=List[UserResponse], tags=["Admin"])
-async def get_all_users(current_user: UserResponse = Depends(ensure_admin)):
+@router.patch("/update-profile", response_model=UserOut)
+def update_profile(
+    payload: UpdateProfileIn,
+    db: Session = Depends(get_db),
+    current: User = Depends(get_current_user)
+):
     """
-    Admin can retrieve all non-admin users.
+    Update user's profile (full name, phone number, location).
+    This version ensures the full_name actually updates even if case/spacing differs.
     """
-    if current_user.role != "admin":
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Only admins can access this route."
-        )
+    # Update full name
+    if payload.full_name is not None:
+        new_name = clean_name(payload.full_name, 80)
+        # Only update if name changed (case-insensitive comparison)
+        if new_name.strip().lower() != (current.full_name or "").strip().lower():
+            current.full_name = new_name
 
-    #  Return only non-admin users
-    users = [user for user in fake_users_db.values() if user["role"] != "admin"]
-    return users
+    # Update phone number
+    if payload.phone_number is not None:
+        new_phone = clean_phone((payload.phone_number or "").strip(), 32)
 
-@router.delete("/me", status_code=204)
-async def delete_my_account(current_user: UserResponse = Depends(get_current_active_user)):
-    """
-    Permanently delete the current user's account.
-    """
-    success = delete_user_by_email(current_user.email)
-    if not success:
-        raise HTTPException(
-            status_code=500,
-            detail="Something went wrong while deleting your account."
-        ) 
-    logging.info(f"ACCOUNT DELETED: {current_user.email}")
-    return
+        if new_phone:
+            # Ensure no duplicate phone across users
+            others = (
+                db.query(User.id, User.phone_number)
+                .filter(User.id != current.id)
+                .all()
+            )
+            for uid, enc_phone in others:
+                if decrypt_str(enc_phone) == new_phone:
+                    raise HTTPException(status_code=400, detail="Phone number already in use")
 
-@router.get("/me/export", response_model=UserResponse)
-async def export_my_data(current_user: UserResponse = Depends(get_current_active_user)):
-    logging.info(f"USER DATA EXPORT: {current_user.email}")
-    """
-    Export the current user's data.
-    """
-    return current_user
+            current.phone_number = encrypt_str(new_phone)
+        else:
+            current.phone_number = None
+
+    # Update location
+    if payload.location is not None:
+        current.location = clean_free_text(payload.location, 120)
+
+    # Save all updates
+    db.add(current)
+    db.commit()
+    db.refresh(current)
+
+    # Always return fresh DB data (reflects updated name immediately)
+    return {
+        "id": str(current.id),
+        "full_name": current.full_name,
+        "email": current.email,
+        "phone_number": decrypt_str(current.phone_number),
+        "role": str(current.role),
+        "location": current.location,
+        "service_preferences": current.service_preferences or {},
+        "email_verified": current.email_verified,
+        "phone_verified": current.phone_verified,
+        "is_active": current.is_active,
+        "is_blocked": current.is_blocked,
+    }
+
+@router.put("/preferences", response_model=UserOut)
+def set_preferences(payload: PreferencesIn, db: Session = Depends(get_db), current: User = Depends(get_current_user)):
+    current.service_preferences = payload.service_preferences or {}
+    db.add(current)
+    db.commit()
+    db.refresh(current)
+    return {
+        "id": str(current.id),
+        "full_name": current.full_name,
+        "email": current.email,
+        "phone_number": decrypt_str(current.phone_number),
+        "role": str(current.role),
+        "location": current.location,
+        "service_preferences": current.service_preferences or {},
+        "email_verified": current.email_verified,
+        "phone_verified": current.phone_verified,
+        "is_active": current.is_active,
+        "is_blocked": current.is_blocked,
+    }
+
+@router.post("/verify-email", response_model=VerifyEmailOut)
+def send_email_verification(db: Session = Depends(get_db), current: User = Depends(get_current_user)):
+    if current.email_verified:
+        return {"message": "Email already verified", "token_for_testing": ""}
+    token = issue_email_verification(db, current)
+    return {"message": "Verification email sent", "token_for_testing": "" if IS_PRODUCTION else token}
+
+@router.post("/verify-email/confirm", response_model=dict)
+def confirm_email(payload: VerifyEmailConfirmIn, db: Session = Depends(get_db), current: User = Depends(get_current_user)):
+    try:
+        confirm_email_verification(db, current, payload.token)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return {"message": "Email verified"}

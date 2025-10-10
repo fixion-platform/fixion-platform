@@ -1,28 +1,60 @@
-# schemas/artisan_schemas.py
-from pydantic import BaseModel, EmailStr, Field
-from typing import Literal, Optional
+# app/schemas/artisan.py
+from __future__ import annotations
+from typing import Optional, List
+from pydantic import BaseModel, ConfigDict
 
+class ArtisanMeOut(BaseModel):
+    user_id: str
+    full_name: str
+    email: str
+    phone_number: Optional[str] = None
+    role: str
 
-class ArtisanSignup(BaseModel):
-    full_name: str = Field(min_length=3, example="John Doe")
-    email: EmailStr = Field(example="artisan@fixion.com")
-    phone_number: str = Field(min_length=11, max_length=15, example="08012345678")
-    password: str = Field(min_length=8, example="StrongPass@123")
-    service_category: str = Field(example="Plumber")
-    service_description: Optional[str] = Field(default=None, example="Expert in home plumbing")
-    years_of_experience: int = Field(gt=0, example=5)  #  made this NOT optional
-    nin: str = Field(min_length=11, max_length=11, example="12345678901")
+    service_category: Optional[str] = None
+    service_description: Optional[str] = None
+    years_of_experience: int = 0
+    work_hours: Optional[str] = None
+    service_location: Optional[str] = None
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "full_name": "John Artisan",
-                "email": "artisan@fixion.com",
-                "phone_number": "08012345678",
-                "password": "StrongPass@123",
-                "service_category": "Electrician",
-                "service_description": "Expert in home wiring and installations",
-                "years_of_experience": 3,
-                "nin": "12345678901"
-            }
-        }
+    base_price_naira: Optional[float] = None
+
+    bank_name: Optional[str] = None
+    account_number: Optional[str] = None
+    account_name: Optional[str] = None
+
+    verification_status: str
+    rejection_reason: Optional[str] = None
+ 
+    model_config = ConfigDict(from_attributes=True)
+
+class ArtisanUpdateIn(BaseModel):
+    service_category: Optional[str] = None
+    service_description: Optional[str] = None
+    years_of_experience: Optional[int] = None
+    work_hours: Optional[str] = None
+    service_location: Optional[str] = None
+
+    base_price_naira: Optional[float] = None
+
+class BankDetailsIn(BaseModel):
+    bank_name: str
+    account_number: str
+    account_name: str
+
+class ArtisanListOut(BaseModel):
+    user_id: str
+    full_name: str
+    email: str
+    phone_number: Optional[str] = None
+    service_category: Optional[str] = None
+    service_location: Optional[str] = None
+
+    base_price_naira: Optional[float] = None
+
+    verification_status: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+class VerifyActionIn(BaseModel):
+    approve: bool
+    rejection_reason: Optional[str] = None
