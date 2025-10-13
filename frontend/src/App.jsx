@@ -6,7 +6,7 @@ import {
 } from "react-router-dom";
 import React from "react";
 import Home from "./pages/Home";
-import Signup from "./pages/signup";
+import SignupCustomer from "./pages/signup";
 import VerifyEmail from "./pages/verify";
 import Artisansignup from "./pages/artisansignup";
 import UploadIdentity from "./pages/upload";
@@ -30,6 +30,19 @@ import ArtisanActivity from "./pages/admindashboard/usermgt/artisans/ArtisanActi
 // import ClientsPage from "./pages/userMgt/clients/ClientsPage";
 import ClientProfile from "./pages/admindashboard/usermgt/clients/ClientProfile";
 import BookingHistory from "./pages/admindashboard/usermgt/clients/BookingHistory";
+// import LoginPageII from "./pages/LoginPageII";
+// import Dashboard from "./pages/dashboard/index";
+// import Layout from "./components/Layout";
+// import Profile from "./pages/profile";
+import JobDetailsPage from "./pages/JobDetailsPage";
+import ConfirmBookingPage from "./pages/ConfirmBookingPage";
+import AccountInfoPage from "./pages/AccountInfoPage";
+import AccountDetailsPage from "./pages/AccountDetailsPage";
+// import Sidebar2 from './components/SideBar2';
+import BookingSummary from "./pages/JobBooking/Book/BookSummary/page";
+import Booking from "./pages/JobBooking/Book/page";
+import ServicePreferences from "./pages/searchAndLocateArtisan/page";
+
 import "./App.css";
 
 function App() {
@@ -38,7 +51,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup-customer" element={<Signup />} />
+        <Route path="/login2" element={<LoginPageII />} />
+        <Route path="/signup-customer" element={<SignupCustomer />} />
         <Route path="/signup-artisan" element={<Artisansignup />} />
         <Route path="/upload" element={<UploadIdentity />} />
         <Route path="/verify" element={<VerifyEmail />} />
@@ -62,6 +76,75 @@ function App() {
             <Route path="clients/:id/history" element={<BookingHistory />} />
           </Route>
         </Route>
+        {/* Wrapped in Layout */}
+        <Route
+          path="/dashboard"
+          element={
+            <Layout>
+              <Dashboard />
+            </Layout>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <Layout>
+              <Profile />
+            </Layout>
+          }
+        />
+
+        {/* Job Details Page - wrapped in Layout */}
+        <Route
+          path="/jobdetail"
+          element={
+            <Layout>
+              <JobDetailsPage />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/confirm-booking"
+          element={
+            <Layout>
+              <ConfirmBookingPage />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/artisansinfo"
+          element={
+            <Layout>
+              <AccountInfoPage />
+            </Layout>
+          }
+        />
+
+        <Route
+          path="/artisansdetails"
+          element={
+            <Layout>
+              <AccountDetailsPage />
+            </Layout>
+          }
+        />
+        {/* Home -> no sidebar */}
+      {/* <Route path="/" element={<ErrorPageVIII />} /> */}
+      <Route path="/Locateartisan" element={<ServicePreferences/>} />
+
+      {/* Dashboard routes -> sidebar included */}
+      <Route element={<DashboardLayout />}>
+        <Route path="/booking" element={<Booking />} />
+        <Route path="/booking-summary" element={<BookingSummary />} />
+        {/*  Add more routes here, all will share Sidebar */}
+        {/* <Route path="/messages" element={<Messages />} /> */}
+        
+      </Route>
+
+      {/* Fallback */}
+      <Route path="*" element={<h1>404 Not Found</h1>} />
       </Routes>
     </Router>
   );

@@ -507,3 +507,4 @@ function Artisansignup() {
 }
 
 export default Artisansignup;
+
