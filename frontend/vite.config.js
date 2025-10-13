@@ -11,4 +11,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  preview: {
+    allowedHosts: ['fixion-fe.up.railway.app'],
+    port: 3000,
+    host: '0.0.0.0'
+  }
 });

@@ -35,7 +35,7 @@ class User(UUIDMixin, TimeStampMixin, Base):
     nin: Mapped[Optional[str]] = mapped_column(Text)
     
     location: Mapped[Optional[str]] = mapped_column(String(255))
-    service_preferences: Mapped[dict] = mapped_column(JSONB, default=dict)
+    service_preferences: Mapped[Optional[dict]] = mapped_column(JSONB, default=dict)
 
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_blocked: Mapped[bool] = mapped_column(Boolean, default=False)
