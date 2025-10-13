@@ -14,7 +14,7 @@ from app.models.session import Session as UserSession
 from app.services.auth_service import decode_access_token
 from app.config import INACTIVITY_TIMEOUT_MINUTES
 
-
+# OAuth2 scheme for token extraction
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 def _unauth(msg="Not authenticated"):
@@ -63,6 +63,7 @@ def get_current_user_with_session(
 
     return user, sess
 
+# Dependency to get the current user
 def get_current_user(
     token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db),
@@ -70,19 +71,19 @@ def get_current_user(
     user, _ = get_current_user_with_session(token, db)
     return user
 
-
+# Dependency to get the current session
 def require_admin(current: User = Depends(get_current_user)) -> User:
     if current.role != UserRole.admin:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Admin only")
     return current
 
-
+# Simple role checker (case insensitive)
 def require_role(user, role_name: str):
     val = str(getattr(user, "role", "")).split(".")[-1].lower()
     if val != role_name.lower():
         raise HTTPException(status_code=403, detail=f"{role_name.capitalize()} only")
 
-
+# Contact verification checker
 def require_verified_contact(current: User = Depends(get_current_user)) -> User:
     """
     Allow only users with a verified contact (email or phone).
@@ -109,7 +110,7 @@ def _is_status_approved(status_obj) -> bool:
         token = s.split(".")[-1] if "." in s else s
     return token.strip().lower() in {"approved", "verified"}  # add more if needed
 
-
+# Artisan approval checker
 def require_artisan_approved(
     current: User = Depends(get_current_user),
     db: Session = Depends(get_db),

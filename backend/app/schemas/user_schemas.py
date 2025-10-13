@@ -81,25 +81,26 @@ class SignupCustomerIn(BaseSignup):
     model_config = ConfigDict(extra="forbid")
 
 
-# Artisan signup (NO role field; unknown fields forbidden)
+# Artisan signup (NO role field; unknown fields now IGNORED; all artisan fields OPTIONAL)
 
 class SignupArtisanIn(BaseSignup):
-    service_category: str = Field(..., min_length=2, max_length=60)
+    # >>> CHANGED: these are now optional (default None) <<<
+    service_category: Optional[str] = Field(None, min_length=2, max_length=60)
     service_description: Optional[str] = Field(None, max_length=600)
-    years_of_experience: int = Field(..., ge=0, le=80)
+    years_of_experience: Optional[int] = Field(None, ge=0, le=80)
 
     @field_validator("service_category")
     @classmethod
-    def _v_cat(cls, v: str) -> str:
-        return clean_free_text(v, 60)
+    def _v_cat(cls, v: Optional[str]) -> Optional[str]:
+        return clean_free_text(v, 60) if v is not None else None
 
     @field_validator("service_description")
     @classmethod
     def _v_desc(cls, v: Optional[str]) -> Optional[str]:
         return clean_free_text(v, 600) if v else None
 
-    # Reject any unexpected fields (e.g., trying to send "role": "customer")
-    model_config = ConfigDict(extra="forbid")
+    # >>> CHANGED: ignore FE-only extras (gender, portfolio_link, confirm_password, etc.) <<<
+    model_config = ConfigDict(extra="ignore")
 
 
 # Profile & preferences
@@ -129,8 +130,10 @@ class UpdateProfileIn(BaseModel):
     def _v_location(cls, v: Optional[str]) -> Optional[str]:
         return clean_free_text(v, 120) if v is not None else None
 
+
 class PreferencesIn(BaseModel):
     service_preferences: Dict[str, Any] = Field(default_factory=dict)
+
 
 class Empty(BaseModel):
     pass

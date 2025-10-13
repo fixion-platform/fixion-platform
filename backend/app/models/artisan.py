@@ -20,9 +20,9 @@ class ArtisanProfile(UUIDMixin, TimeStampMixin, Base):
         PGUUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), unique=True, index=True
     )
 
-    service_category: Mapped[str] = mapped_column(String(100), index=True)
+    service_category: Mapped[Optional[str]] = mapped_column(String(100), index=True)
     service_description: Mapped[Optional[str]] = mapped_column(String(500))
-    years_of_experience: Mapped[int] = mapped_column(Integer, default=0)
+    years_of_experience: Mapped[Optional[int]] = mapped_column(Integer, default=0)
 
     work_hours: Mapped[Optional[str]] = mapped_column(String(120))
     service_location: Mapped[Optional[str]] = mapped_column(String(120))
