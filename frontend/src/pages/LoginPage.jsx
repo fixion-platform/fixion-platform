@@ -182,23 +182,23 @@ export default function LoginPage() {
   const { mutate: login, isPending, isError, error } = useLogin();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({ username: "", password: "" });
   const [formError, setFormError] = useState("");
 
   const onSubmit = (e) => {
     e.preventDefault();
     setFormError("");
 
-    const email = form.email.trim();
+    const username = form.username.trim();
     const password = form.password;
 
-    if (!email || !password) {
+    if (!username || !password) {
       setFormError("Please enter your email and password.");
       return;
     }
 
     login(
-      { email, password },
+      { username, password },
       {
         onSuccess: () => navigate("/admindashboard", { replace: true }),
       }
@@ -268,11 +268,11 @@ export default function LoginPage() {
               <div className="relative">
                 <input
                   type="email"
-                  value={form.email}
-                  onChange={(e) => setForm((s) => ({ ...s, email: e.target.value }))}
+                  value={form.username}
+                  onChange={(e) => setForm((s) => ({ ...s, username: e.target.value }))}
                   className="input-field text-black"
                   placeholder="Enter your email"
-                  autoComplete="email"
+                  autoComplete="username"
                   required
                 />
                 <div className="icon-placeholder absolute right-3 top-1/2 -translate-y-1/2">

@@ -16,31 +16,31 @@ export default function FixionLogin() {
     <div className="login-container min-h-screen w-screen flex flex-col lg:flex-row m-0 p-0">
       {/* Left Side - Hero Section */}
       <div className="hero-section relative overflow-hidden flex-shrink-0">
-      {/* Background image */}
-      <img
-        src={img1}
-        alt="Artisan giving thumbs up"
-        className="hero-image absolute inset-0 w-full h-full object-cover z-10"
-      />
+        {/* Background image */}
+        <img
+          src={img1}
+          alt="Artisan giving thumbs up"
+          className="hero-image absolute inset-0 w-full h-full object-cover z-10"
+        />
 
-      {/* Gradient overlay */}
-      <div
-        className="absolute inset-0 z-15"
-        style={{
-          background: 'linear-gradient(180deg, rgba(0,0,0,0), #050150)'
-        }}
-      ></div>
+        {/* Gradient overlay */}
+        <div
+          className="absolute inset-0 z-15"
+          style={{
+            background: 'linear-gradient(180deg, rgba(0,0,0,0), #050150)'
+          }}
+        ></div>
 
-      {/* Absolute-positioned logo & motto, centered at bottom */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 text-white text-center">
-        <div className="mb-4">
-          <img src={img2} alt="FIXION" className="hero-logo mx-auto" />
+        {/* Absolute-positioned logo & motto, centered at bottom */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 text-white text-center">
+          <div className="mb-4">
+            <img src={img2} alt="FIXION" className="hero-logo mx-auto" />
+          </div>
+          <h2 className="hero-heading text-white font-semibold whitespace-nowrap">
+            Find the right fix, Fast!
+          </h2>
         </div>
-        <h2 className="hero-heading text-white font-semibold whitespace-nowrap">
-          Find the right fix, Fast!
-        </h2>
       </div>
-    </div>
 
 
 
@@ -85,29 +85,29 @@ export default function FixionLogin() {
 
           {/* Login Form */}
           <div className="space-y-4">
-          {/* Email Field */}
-          <div className="text-left">
-            <label
-              className="block text-sm font-medium mb-2 text-left"
-              style={{ color: '#1E1A62' }}
-            >
-              Email
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input-field text-black"
-                placeholder="Enter your email"
-              />
-              <div className="icon-placeholder absolute right-3 top-1/2 transform -translate-y-1/2">
-                <img src={img5} alt="@" />
+            {/* Email Field */}
+            <div className="text-left">
+              <label
+                className="block text-sm font-medium mb-2 text-left"
+                style={{ color: '#1E1A62' }}
+              >
+                Email
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input-field text-black"
+                  placeholder="Enter your email"
+                />
+                <div className="icon-placeholder absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <img src={img5} alt="@" />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Password Field */}
+            {/* Password Field */}
             <div className="text-left">
               <label
                 className="block text-sm font-medium mb-2 text-left"
@@ -133,7 +133,7 @@ export default function FixionLogin() {
               </div>
             </div>
 
-           {/* Forgot Password */}
+            {/* Forgot Password */}
             <div className="text-right">
               <a
                 href="#"
