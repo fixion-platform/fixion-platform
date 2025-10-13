@@ -275,12 +275,12 @@ def create_artisan(
     *,
     full_name: str,
     email: str,
-    phone: str | None,
+    phone: Optional[str] = None,
     password: str,
-    nin: str | None,
-    category: str,
-    description: str | None,
-    years: int,
+    nin: Optional[str] = None,
+    category: Optional[str] = None,
+    description: Optional[str] = None,
+    years: Optional[str] = None,
 ) -> User:
     if db.query(User).filter(User.email == email).first():
         raise ValueError("Email already exists")
