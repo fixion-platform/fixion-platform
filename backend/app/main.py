@@ -90,7 +90,9 @@ CORS_ALLOW_ORIGINS = [o.strip() for o in RAW_CORS.split(",") if o.strip()]
 
 # In production, require HTTPS origins to avoid accidental lax config
 if IS_PRODUCTION:
-    CORS_ALLOW_ORIGINS = [o for o in CORS_ALLOW_ORIGINS if o.startswith("https://")]
+    CORS_ALLOW_ORIGINS = [
+        o for o in CORS_ALLOW_ORIGINS 
+        if o == "https://fixion.up.railway.app" or o.startswith("http://localhost")]
 
 # CORS middleware (explicit, security-oriented defaults)
 app.add_middleware(
