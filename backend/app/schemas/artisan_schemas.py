@@ -12,7 +12,7 @@ class ArtisanMeOut(BaseModel):
 
     service_category: Optional[str] = None
     service_description: Optional[str] = None
-    years_of_experience: int = 0
+    years_of_experience: Optional[int] = 0
     work_hours: Optional[str] = None
     service_location: Optional[str] = None
 
@@ -58,3 +58,7 @@ class ArtisanListOut(BaseModel):
 class VerifyActionIn(BaseModel):
     approve: bool
     rejection_reason: Optional[str] = None
+
+class Config:
+
+    extra = "ignore"    
