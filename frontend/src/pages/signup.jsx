@@ -626,12 +626,28 @@ function SignupCustomer() {
     }
     async function handleSubmit(e) {
         e.preventDefault();
-        const res = await fetch("https://fixion.up.railway.app/auth/signup-customer", { method: "POST", body: JSON.stringify(form) })
-        if (res.ok) {
-            console.log("Signup successful!");
-            navigate("/");
-        } else {
-            console.error("Signup failed");
+
+        try {
+            const res = await fetch(
+                "https://fixion.up.railway.app/auth/signup-customer",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(form)
+                })
+
+            const data = res.json()
+
+            if (res.ok) {
+                console.log("Signup successful!", data);
+                navigate("/");
+            } else {
+                console.error("Signup failed", data);
+            }
+        } catch (err) {
+            console.error("Signup failed", err.message);
         }
     }
     return (
