@@ -92,7 +92,7 @@ CORS_ALLOW_ORIGINS = [o.strip() for o in RAW_CORS.split(",") if o.strip()]
 if IS_PRODUCTION:
     CORS_ALLOW_ORIGINS = [
         o for o in CORS_ALLOW_ORIGINS 
-        if o == "https://fixion.up.railway.app" or o.startswith("http://localhost")
+        if o == "https://fixion-fe.up.railway.app" or o.startswith("http://localhost")
     ]
 
 # CORS middleware (explicit, security-oriented defaults)
