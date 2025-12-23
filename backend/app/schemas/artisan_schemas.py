@@ -26,3 +26,8 @@ class ArtisanSignup(BaseModel):
                 "nin": "12345678901"
             }
         }
+
+# Create artisan login schema
+class ArtisanLogin(BaseModel):
+    email: EmailStr = Field(example="artisan@fixion.com")
+    password: str = Field(min_length=8, example="StrongPass@123")

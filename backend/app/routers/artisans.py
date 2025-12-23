@@ -1,5 +1,6 @@
 # routers/artisans.py
 from fastapi import APIRouter, HTTPException, status, Depends
+from uuid import uuid
 from fastapi import File, UploadFile, Form
 from schemas.artisan_schemas import ArtisanSignup
 from schemas.user_schemas import UserResponse
@@ -9,9 +10,9 @@ from typing import Optional
 import re
 import os
 
-router = APIRouter()
+router = APIRouter(tags=["Artisans"])
 
-@router.post("/signup/artisan", response_model=UserResponse, status_code=status.HTTP_201_CREATED, tags=["Artisans"])
+@router.post("/signup/artisan", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def artisan_signup(artisan: ArtisanSignup):
     # Sanitize & normalize inputs
     email = artisan.email.strip().lower()
@@ -69,7 +70,7 @@ def artisan_signup(artisan: ArtisanSignup):
 UPLOAD_DIR = "uploads/artisans"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-@router.post("/upload/artisan-documents", tags=["Artisans"])
+@router.post("/upload/artisan-documents")
 def upload_documents(
     email: str = Form(...),
     id_card: UploadFile = File(...),
