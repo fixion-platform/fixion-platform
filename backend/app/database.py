@@ -18,6 +18,9 @@ EXPIRE = int(os.getenv("EXPIRE", 30))
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+print("\n 'Database session initialized' \n")
+
 Base = declarative_base()
 
 def get_db():

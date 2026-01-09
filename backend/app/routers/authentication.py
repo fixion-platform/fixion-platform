@@ -21,7 +21,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-router = APIRouter(
+auth_router = APIRouter(
     prefix="/auth",
     tags=["Authentication"],
 )
@@ -29,7 +29,7 @@ router = APIRouter(
 # In-memory reset token storage (for demo purposes)
 reset_tokens = {}
 
-@router.post("/login", response_model=Token)
+@auth_router.post("/login", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Provides a JWT token for valid user credentials.
@@ -69,7 +69,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post("/logout", status_code=status.HTTP_200_OK)
+@auth_router.post("/logout", status_code=status.HTTP_200_OK)
 async def logout():
     """
     Placeholder logout endpoint.
@@ -80,7 +80,7 @@ async def logout():
     )
 
 
-@router.post("/forgot-password")
+@auth_router.post("/forgot-password")
 def forgot_password(email: str):
     """
     Simulates sending a password reset token to user's email.
@@ -102,7 +102,7 @@ def forgot_password(email: str):
     }
 
 
-@router.post("/reset-password")
+@auth_router.post("/reset-password")
 def reset_password(token: str, new_password: str):
     """
     Resets the password using a valid reset token.
