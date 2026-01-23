@@ -2,14 +2,17 @@
 from fastapi import APIRouter, HTTPException, Depends, status, Query
 from typing import List
 from sqlalchemy.orm import Session
+from fastapi.security import OAuth2PasswordRequestForm
 # from auth_utils import ensure_admin, get_current_active_user, get_password_hash
-from schemas.user_schemas import UserResponse, UserCreate, CustomerPreferences
+from schemas.user_schemas import UserResponse, UserCreate, UserLogin, CustomerPreferences, Token,  UserUpdate, UserResponse
 from database import get_db
 from services.auth_service import auth_services
 from models import UserT
 import uuid
 from uuid import UUID
+from services.auth_service import ACCESS_TOKEN_EXPIRE_MINUTES
 import logging
+from services.auth_service import auth_services
 
 user_router = APIRouter(
     prefix="/users"
@@ -34,12 +37,34 @@ async def create_user(user: UserCreate,  db: Session = Depends(get_db)):
     return UserResponse.from_orm(new_user)
 
 @user_router.get("/me", response_model=UserResponse, tags=["Users"])
-async def profile(current_user: UserResponse = Depends(auth_services.get_current_user)):
+async def profile(current_user: UserResponse = Depends(auth_services.get_current_user), db:  Session = Depends(get_db)):
     """
     Fetches the details of the currently authenticated user.
     """
     return current_user
 
+@user_router.post("/login", response_model=Token)
+def login(formdata: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    detail = auth_services.authenticate(UserLogin(email=formdata.username, password=formdata.password), db)
+    if not detail:
+        raise HTTPException(status_code=400, detail="Invalid Login Credentials")
+    access_token = auth_services.create_access_token(detail.email, detail.id, expires_delta=ACCESS_TOKEN_EXPIRE_MINUTES)
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
+
+@user_router.patch("/update_profile", response_model=UserResponse)
+def update_details(user: UserUpdate,current_user: UserResponse = Depends(auth_services.get_current_user), db: Session = Depends(get_db)):
+    details = db.query(UserT).filter(UserT.id == str(current_user.id)).first()
+    if not details:
+        raise HTTPException(status_code=404, detail="User not found")
+    for key, value in user.model_dump().items():
+        if value is not None:
+            setattr(details, key, value)
+    db.commit()
+    db.refresh(details)
+    return details
+# @user_router.get()
 
 # USER SIGNUP (CUSTOMERS ONLY)
 # @user_router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED, tags=["Users"])

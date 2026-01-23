@@ -22,7 +22,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
 
 # Password hashing context
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-auth_bearer = OAuth2PasswordBearer(tokenUrl="/login")
+auth_bearer = OAuth2PasswordBearer(tokenUrl="/users/login")
 
 class AuthService:
     @staticmethod
@@ -30,7 +30,7 @@ class AuthService:
         details = db.query(UserT).filter(UserT.email == user.email).first()
         if not details:
             raise HTTPException(status_code=400, detail="Incorrect Email Adddress")
-        if not pwd_context.verify(user.password_hash, details.password):
+        if not pwd_context.verify(user.password, details.password):
             raise HTTPException(status_code=400, detail ="Incorrect Password")
         return details
 
@@ -47,7 +47,7 @@ class AuthService:
     # --- Token Functions ---
     def create_access_token(email: EmailStr, id: str, expires_delta: timedelta) -> str:
         to_encode = {"email": email, "id": id}
-        expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=15))
+        expire = datetime.now() + timedelta(minutes=15)
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return encoded_jwt
@@ -69,7 +69,7 @@ class AuthService:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate details")
             user = db.query(UserT).filter(UserT.email == email).first()
             if user is None:
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="This  User  nno  longer  exists")
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="This User no longer exists")
             return user
         except JWTError:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate credentials")

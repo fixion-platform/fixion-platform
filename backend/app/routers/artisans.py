@@ -1,3 +1,30 @@
+from  fastapi import APIRouter, HTTPException,  status, Depends
+from database import  get_db
+from sqlalchemy.orm import Session
+from schemas.artisan_schemas import ArtisanCreate, ArtisanResponse, ArtisanUpdate
+from services.artisan import artisan_services
+from services.auth_service import auth_services
+from uuid import UUID
+
+artisan_router = APIRouter()
+
+
+@artisan_router.get("/artisans", tags=["Artisans"])
+def get_all_artisans(db=Depends(get_db)):
+    artisans = artisan_services.get_all_artisans(db)
+    return artisans
+
+
+@artisan_router.post("/artisan", response_model=ArtisanResponse, status_code=status.HTTP_201_CREATED, tags=["Artisans"])
+def create_artisan(artisan_details: ArtisanCreate, db: Session = Depends(get_db)):
+    new_artisan = artisan_services.create_artisan(artisan_details, db)
+    return {"artisan": ArtisanResponse.from_orm(new_artisan)}
+
+@artisan_router.patch("/artisan/update", response_model=ArtisanResponse, tags=["Artisans"])
+def update_artisan(updates: ArtisanUpdate, currentUser: ArtisanResponse = Depends(auth_services.get_current_user), db: Session = Depends(get_db)):
+    updated_artisan = artisan_services.update_artisan(currentUser.id, updates, db)
+    return updated_artisan
+
 # # routers/artisans.py
 # from fastapi import APIRouter, HTTPException, status, Depends
 # from uuid import UUID

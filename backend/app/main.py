@@ -4,6 +4,8 @@
 from fastapi import FastAPI
 # from routers import users, artisans, admin
 from routers.users import user_router
+from routers.admin import admin_router
+from routers.artisans import artisan_router
 
 app = FastAPI(
     title="Fixion API",
@@ -18,6 +20,8 @@ app = FastAPI(
 # app.include_router(admin.router)
 
 include_router = app.include_router(user_router)
+include_router = app.include_router(admin_router)
+include_router = app.include_router(artisan_router)
 
 # Root route - a simple welcome message to test if API is working
 @app.get("/", tags=["Root"])

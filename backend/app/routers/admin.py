@@ -1,5 +1,41 @@
 # # routers/admin.py
 
+from  fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from  services.admin import adminServices
+from  database import get_db, engine
+from models import Base
+from services.auth_service import auth_services
+
+Base.metadata.create_all(bind=engine)
+
+admin_router = APIRouter(tags=["Admin"])
+
+
+@admin_router.get("/admin/users")
+def get_all_users(db: Session =  Depends(get_db)):
+    details = adminServices.get_all_users(db)
+    return details
+
+@admin_router.get("/admin/admins")
+def get_all_admins(db: Session =  Depends(get_db)):
+    details = adminServices.get_all_admins(db)
+    return details 
+
+@admin_router.get("/admin/all")
+def get_all(db: Session =  Depends(get_db)):
+    details = adminServices.all(db)
+    return details
+
+@admin_router.delete("/admin/delete-user/{user_id}")
+def delete_user(user_id: str, db: Session =  Depends(get_db)):
+    details = adminServices.delete_user(user_id, db)
+    return details
+
+@admin_router.get("/admin/user/{user_id}")
+def get_user_by_id(user_id: str, db: Session =  Depends(get_db)):
+    details = adminServices.get_user_by_id(user_id, db)
+    return details
 # from fastapi import APIRouter, Depends, HTTPException, status
 # from typing import List
 

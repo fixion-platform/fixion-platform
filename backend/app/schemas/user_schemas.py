@@ -11,7 +11,7 @@ class UserBase(BaseModel):
     email: EmailStr = Field(..., description="The user's email address")
     phone_number: str = Field(..., description="The user's phone number")
     password: str = Field(..., description="The user's password")
-    role: str = Field(default="client", description="The user's role")
+    role: str = Field(default="user", description="The user's role")
     latitude: float = Field(None, description="The user's latitude")
     longitude: float = Field(None, description="The user's longitude")
     gender: str = Field(..., description="The user's gender")
@@ -29,6 +29,11 @@ class UserCreate(UserBase):
     """Schema for creating a new user."""
     pass
 
+class UserLogin(BaseModel):
+    """Schema for user login."""
+    email: EmailStr = Field(..., description="The user's email address")
+    password: str = Field(..., description="The user's password hash")
+
 # class UserUpdate(BaseModel):
 #     """Schema for updating user information."""
 #     fullname : Optional[str] = Field(None, description="User First name")
@@ -37,13 +42,13 @@ class UserCreate(UserBase):
 #     gender: str = Field(..., description="The user's gender")
 #     is_active: Optional[bool] = Field(None, description="Indicates if the user is active")
 
-    @validator('password')
-    def validate_password(cls, v):
-        if len(v) < 8:
-            raise ValueError("Password must be at least 8 characters long.")
-        if not re.search(r'[A-Za-z]', v) or not re.search(r'\d', v):
-            raise ValueError("Password must include both letters and numbers.")
-        return v
+    # @validator('password')
+    # def validate_password(cls, v):
+    #     if len(v) < 8:
+    #         raise ValueError("Password must be at least 8 characters long.")
+    #     if not re.search(r'[A-Za-z]', v) or not re.search(r'\d', v):
+    #         raise ValueError("Password must include both letters and numbers.")
+    #     return v
 
 class UserResponse(UserBase):
     """Schema for returning user data in responses."""
@@ -56,6 +61,14 @@ class UserResponse(UserBase):
 
     class Config:
         from_attributes = True
+
+
+class UserUpdate(BaseModel):
+    fullname: Optional[str] = None
+    phone_number: Optional[str] = None
+    gender: Optional[str] = None
+    longitude: Optional[float] = None
+    latitude: Optional[float] = None
 
 class Token(BaseModel):
     """Schema for the JWT access token."""
